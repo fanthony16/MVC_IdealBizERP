@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using System.Text;
+
+<ul class="navbar-nav ml-sm-auto">
+    @{
+
+        var username = Context.User.Identity.Name;
+        byte[] bytes;
+        bool isActive = Context.Session.TryGetValue("username", out bytes);
+
+    }
+
+    
+    @if (Context.Session.TryGetValue("username", out bytes))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout">Logout Mr. @Encoding.ASCII.GetString(bytes)</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Log-In</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+        </li>
+
+    }
+
+
+</ul>

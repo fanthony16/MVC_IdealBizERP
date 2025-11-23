@@ -12,14 +12,15 @@ namespace IdealBizUI.InterfaceServices
     public class UserManager : IUserManager
     {
 
-        
         private IdealBizContext DbContect;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UserManager(IHttpContextAccessor httpContextAccessor) 
         {
             _httpContextAccessor = httpContextAccessor;
+
         }
+
 
         public void SetDbContext(IdealBizContext Db) 
         {
@@ -48,23 +49,25 @@ namespace IdealBizUI.InterfaceServices
         //Authenticating Login User
         public async Task<bool> LoginUser(LoginViewModel model)
         {
+            try {
 
-           
-            
-            //get a sinlge value
-            //var nn = DbContect.TblUsers.Single(b => b.TxtUserName == model.UserName && b.TxtPassword == model.Password);
-            //find a single value with primary key
-            //var nnn = DbContect.TblUsers.Find(1);
+                var nnn = await DbContect.TblUsers.FirstOrDefaultAsync(b => b.TxtUserName == model.UserName && b.TxtPassword == model.Password);
 
-            var nnn = await DbContect.TblUsers.FirstOrDefaultAsync(b => b.TxtUserName == model.UserName && b.TxtPassword == model.Password);
-            
-            if (nnn is not null) {
-                return true;
+                if (nnn is not null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
+            catch (Exception ex)
             {
                 return false;
             }
+
+            
 
             
             

@@ -1,0 +1,166 @@
+﻿@model IdealBizUI.Models.Company
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+<h4>Company Setup</h4>
+<hr />
+
+<div class="container text-left">
+    <form asp-action="Create">
+        <div class="row">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+        <div class="row">
+            <div class="col">
+
+                <div class="form-group">
+                    <label asp-for="CompanyName" class="control-label"></label>
+                    <input asp-for="CompanyName" class="form-control" />
+                    <span asp-validation-for="CompanyName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CompanyAddress" class="control-label"></label>
+                    <input asp-for="CompanyAddress" class="form-control" />
+                    <span asp-validation-for="CompanyAddress" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ContactPhone" class="control-label"></label>
+                    <input asp-for="ContactPhone" class="form-control" />
+                    <span asp-validation-for="ContactPhone" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="OfficePhone" class="control-label"></label>
+                    <input asp-for="OfficePhone" class="form-control" />
+                    <span asp-validation-for="OfficePhone" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="EmailAddress" class="control-label"></label>
+                    <input asp-for="EmailAddress" class="form-control" />
+                    <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                </div>
+
+            </div>
+            <div class="col">
+
+                @*Column-2*@
+
+              
+
+
+                <div class="form-group">
+                    <label asp-for="VatLedger"></label>
+                    <select asp-for="VatLedger" asp-items="Model.AccountsChart" class="form-control">
+                        <option value="">---</option>
+                    </select>
+                    <span asp-validation-for="VatLedger" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="InventoryLedger"></label>
+                    <select asp-for="InventoryLedger" asp-items="Model.AccountsChart" class="form-control">
+                        <option value="">---</option>
+                    </select>
+                    <span asp-validation-for="InventoryLedger" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="InventoryExpenseLedger"></label>
+                    <select asp-for="InventoryExpenseLedger" asp-items="Model.AccountsChart" class="form-control">
+                        <option value="">---</option>
+                    </select>
+                    <span asp-validation-for="InventoryExpenseLedger" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="InventoryIncomeLedger"></label>
+                    <select asp-for="InventoryIncomeLedger" asp-items="Model.AccountsChart" class="form-control">
+                        <option value="">---</option>
+                    </select>
+                    <span asp-validation-for="InventoryIncomeLedger" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="RecievableLedger"></label>
+                    <select asp-for="RecievableLedger" asp-items="Model.AccountsChart" class="form-control">
+                        <option value="">---</option>
+                    </select>
+                    <span asp-validation-for="RecievableLedger" class="text-danger"></span>
+                </div>
+
+
+
+
+            </div>
+            <div class="col">
+                @*Column-3rd*@
+
+                <div class="form-group">
+                    <label asp-for="PayableLedger"></label>
+                    <select asp-for="PayableLedger" asp-items="Model.AccountsChart" class="form-control">
+                        <option value="">---</option>
+                    </select>
+                    <span asp-validation-for="PayableLedger" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="GeneralIncomeLedger"></label>
+                    <select asp-for="GeneralIncomeLedger" asp-items="Model.AccountsChart" class="form-control">
+                        <option value="">---</option>
+                    </select>
+                    <span asp-validation-for="GeneralIncomeLedger" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="VatRate" class="control-label"></label>
+                    <input asp-for="VatRate" class="form-control" />
+                    <span asp-validation-for="VatRate" class="text-danger"></span>
+                </div>
+
+                <div class="form-check form-check-inline">
+
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="blnConnect2GL" /> @Html.DisplayNameFor(model => model.blnConnect2GL)
+                    </label>
+                </div>
+
+                <div class="form-check form-check-inline">
+
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="ApplyVat" /> @Html.DisplayNameFor(model => model.ApplyVat)
+                    </label>
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,4 +1,7 @@
-﻿using IdealBizUI.Models;
+﻿using IdealBizUI.Data;
+using IdealBizUI.InterfaceServices;
+using IdealBizUI.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,15 +15,23 @@ namespace IdealBizUI.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+       // private readonly IdealBizContext _db;
+        private readonly IUserManager _uManager;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            
+
         }
 
         public IActionResult Index()
         {
+            HttpContext.Session.SetString("Username", "JohnDoe");
+            HttpContext.Session.SetInt32("Age", 30);
+
+            string username = HttpContext.Session.GetString("Username");
+            int? age = HttpContext.Session.GetInt32("Age");
+
             return View();
         }
 

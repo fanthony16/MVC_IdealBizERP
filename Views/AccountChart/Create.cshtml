@@ -1,0 +1,108 @@
+﻿@model IdealBizUI.ViewModels.View_AccountChart
+@using IdealBizUI.Enums;
+
+<h4>View_AccountChart</h4>
+<hr />
+
+
+
+        
+
+        <form asp-action="Create">
+
+            <div class="row">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+
+                    <div class="form-group">
+                        <input type="hidden" asp-for="intRecID" />
+                        <label asp-for="txtAccountNumber" class="control-label"></label>
+                        <input asp-for="txtAccountNumber" class="form-control" />
+                        <span asp-validation-for="txtAccountNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="txtAccountName" class="control-label"></label>
+                        <input asp-for="txtAccountName" class="form-control" />
+                        <span asp-validation-for="txtAccountName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="intAccountGroup" class="control-label"></label>
+
+
+                        <select class="form-control" asp-for="intAccountGroup" asp-items="Model.AccountGroups">
+                            <option></option>
+                        </select>
+
+                        @*<select asp-for="intAccountGroup" class="form-control" asp-items="Html.GetEnumSelectList<EnumItems.ItemType>()">
+                            <option></option>
+                        </select>*@
+
+                        <span asp-validation-for="intAccountGroup" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="isPosting" /> @Html.DisplayNameFor(model => model.isPosting)
+                        </label>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="isBlocked" /> @Html.DisplayNameFor(model => model.isBlocked)
+                        </label>
+                    </div>
+
+                </div>
+                <div class="col">
+
+                    <div class="form-group">
+                        <label asp-for="IntIncomeOrBalance" class="control-label"></label>
+
+                        <select asp-for="IntIncomeOrBalance" class="form-control" asp-items="Html.GetEnumSelectList<EnumItems.AccountClass>()">
+                            <option>
+                            </option>
+                        </select>
+
+                        <span asp-validation-for="IntIncomeOrBalance" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="IntAccountType" class="control-label"></label>
+
+
+                        <select asp-for="IntAccountType" class="form-control" asp-items="Html.GetEnumSelectList<EnumItems.AccountType>()">
+                            <option>
+                            </option>
+                        </select>
+
+                        <span asp-validation-for="IntAccountType" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="intPostingType" class="control-label"></label>
+
+                        <select asp-for="intPostingType" class="form-control" asp-items="Html.GetEnumSelectList<EnumItems.PostingType>()">
+                            <option>
+                            </option>
+                        </select>
+
+                        <span asp-validation-for="intPostingType" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+ 
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

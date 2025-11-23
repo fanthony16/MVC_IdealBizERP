@@ -1,0 +1,254 @@
+﻿@model IdealBizUI.ViewModels.View_ItemCategory
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Item Categories</h4>
+
+<button type="button" class="btn btn-link" data-toggle="modal" data-target="#newModalICategory">Create New</button>
+
+<!-- Add New ICategory -->
+<div class="modal fade" id="newModalICategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="saveForm" method="post">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Add New Item Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+
+                        <label asp-for="itemCategory.Code" class="control-label"></label>
+                        <input asp-for="itemCategory.Code" class="form-control" />
+                        <span asp-validation-for="itemCategory.Code" class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+
+                        <label asp-for="itemCategory.Description" class="control-label"></label>
+                        <input asp-for="itemCategory.Description" class="form-control" />
+                        <span asp-validation-for="itemCategory.Description" class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnAddNew" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Item Category -->
+<div class="modal fade" id="deleteModalICategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="saveform" method="post">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Item Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4>Are You Sure You want to delete?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnDelete" type="button" class="btn btn-primary">Delete</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Item Category -->
+<div class="modal fade" id="editICategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            @*<form asp-action="Update" id="EditForm" method="post">*@
+            <form id="updateForm" method="post">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Edit Item Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+
+                        <input class="updateId" type="hidden" asp-for="itemCategory.CategoryID" />
+                        <label asp-for="itemCategory.Code" class="control-label"></label>
+                        <input id="catCode" asp-for="itemCategory.Code" class="form-control" />
+                        <span asp-validation-for="itemCategory.Code" class="text-danger"></span>
+
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+
+                        <label asp-for="itemCategory.Description" class="control-label"></label>
+                        <input id="catDesc" asp-for="itemCategory.Description" class="form-control" />
+                        <span asp-validation-for="itemCategory.Description" class="text-danger"></span>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnUpdate" type="button" class="btn btn-primary">Save Changes</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@*<h1>Index</h1>
+
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>*@
+
+<input type="hidden" id="ItmCatId" />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.itemCategory.Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.itemCategory.Description)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.itemCategories)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+
+                    @*<a asp-action="Edit" asp-route-id="@item.CategoryID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.CategoryID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.CategoryID">Delete</a>*@
+
+                    <a id="EditForm" class="btn-link" onclick="Editform('@item.CategoryID')">Edit</a> |
+                    <a id="ShowModal" class="btn-link" onclick="Confirm('@item.CategoryID')">Delete</a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+    $(document).ready(function () {
+
+        $("#btnDelete").click(function () {
+            var idD = $("#ItmCatId").val();
+            $.ajax({
+                type: "POST",
+                url: "/ItemCategory/DeleteICat",
+                data: { id: idD },
+                success: function (result) {
+                    if (result) {
+                        $("#ItmCatId").val(null);
+                        window.location.href = "/ItemCategory/Index";
+                    } else {
+                        alert("Opps Something Wrong");
+                    }
+                }
+            })
+        })
+
+
+        $(".btnCancel").click(function () {
+            window.location.href = "/ItemCategory/Index";
+        })
+
+
+        $("#btnAddNew").click(function () {
+
+            var itmCatForm = $("#saveForm").serialize();
+            $.ajax({
+                type: "POST",
+                url: "/ItemCategory/Create",
+                data: itmCatForm,
+                success: function () {
+                    window.location.href = "/ItemCategory/Index"
+                }
+            })
+        })
+
+        $("#btnUpdate").click(function () {
+            /* alert("Save Button Clicked");*/
+
+            var itmCatForm = $("#updateForm").serialize();
+            $.ajax({
+                type: "POST",
+                url: "/ItemCategory/Update",
+                data: itmCatForm,
+                success: function () {
+                    window.location.href = "/ItemCategory/Index"
+                }
+            })
+        })
+
+    })
+
+
+    var Confirm = function (id) {
+
+        $("#ItmCatId").val(id);
+        $("#deleteModalICategory").modal('show');
+
+    }
+    var Editform = function (id) {
+        $.ajax({
+            type: "POST",
+            url: "/ItemCategory/GetCategory",
+            data: { id: id },
+            success: function (iCat) {
+                $("#editICategoryModal").modal('show');
+                $("#catCode").val(iCat.code);
+                $("#catDesc").val(iCat.name);
+                $(".updateId").val(iCat.id);
+            }
+        })
+    }
+    </script>
+}

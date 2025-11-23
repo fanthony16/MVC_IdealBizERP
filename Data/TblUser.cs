@@ -15,10 +15,9 @@ namespace IdealBizUI.Data
         public string TxtUserAccessGroup { get; set; }
         public DateTime? DteCreated { get; set; }
         public bool? BlnIsActive { get; set; }
-
         public string TxtEmail { get; set; }
-
-        public int IntGender { get; set; }
+        public string TxtTitle { get; set; }
+        public int? IntGender { get; set; }
 
         public virtual TblUserGroup TxtUserAccessGroupNavigation { get; set; }
     }

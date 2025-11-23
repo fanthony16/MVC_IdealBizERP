@@ -1,0 +1,243 @@
+﻿@*@model IEnumerable<IdealBizUI.ViewModels.Company>*@
+@model IdealBizUI.ViewModels.View_Company
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<h1>Index</h1>*@
+
+<h4>Company List</h4>
+
+
+<!-- Button trigger modal -->
+@*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#NewModalCenter">
+    Create New Customer
+</button>*@
+
+<!-- Add New Customer -->
+<div class="modal fade" id="NewModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="saveForm" method="post">
+
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Add New Customer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+
+                        <label asp-for="MyCompany.CompanyName" class="control-label"></label>
+                        <input asp-for="MyCompany.CompanyName" class="form-control" />
+                        <span asp-validation-for="MyCompany.CompanyName" class="text-danger"></span>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnAddNew" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Customer -->
+<div class="modal fade" id="deleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="saveform" method="post">
+
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Delete Customer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h1>Are You Sure You want to delete this customer?</h1>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnDelete" type="button" class="btn btn-primary">Delete</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Customer -->
+<div class="modal fade" id="EditModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form asp-action="Update" id="EditForm" method="post">
+
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Edit Model</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input class="updateId" type="hidden" asp-for="MyCompany.CompanyID" />
+                        <label asp-for="MyCompany.CompanyName" class="control-label"></label>
+                        <input id="empName" asp-for="MyCompany.CompanyName" class="form-control" />
+                        <span asp-validation-for="MyCompany.CompanyName" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnSave" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<input type="hidden" id="EmpId" />
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.MyCompany.CompanyID)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.MyCompany.CompanyName)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.MyCompany.CompanyAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MyCompany.ContactPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MyCompany.EmailAddress)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Companies)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyID)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyName)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContactPhone)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmailAddress)
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.CompanyID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.CompanyID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.CompanyID">Delete</a>
+                    @*<a id="EditForm" class="btn btn-primary" onclick="EditForm(@item.CompanyID)">Edit</a>
+                    <a id="ShowModal" class="btn btn-danger" onclick="Confirm(@item.CompanyID)">Delete</a>*@
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{ 
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+<script>
+    $(document).ready(function () {
+
+        $("#btndelete").click(function () {
+            var idD = $("#EmpId").val();
+            $.ajax({
+                type: "POST",
+                url: "/Companies/Delete",
+                data: { id: idD },
+                success: function (result) {
+                    if (result) {
+                        $("#EmpID").val(null);
+                        window.location.href = "/Companies/Index";
+                    } else {
+                        alert("Opps Something Wrong");
+                    }
+                }
+            })
+        })
+
+        $(".btnCancel").click(function () {
+            window.location.href = "/Companies/Index";
+        })
+
+        $("#btnAddNew").click(function () {
+           /* alert("Save Button Clicked");*/
+            
+            var companyForm = $("#saveForm").serialize();
+            $.ajax({
+                type: "POST",
+                url: "/Companies/Create",
+                data: companyForm,
+                success: function () {
+                    window.location.href = "/Companies/Index"
+                }
+            })
+        })
+    })
+
+
+    var Confirm = function (id) {
+
+        $("#EmpID").val(id);
+        $("#deleteModalCenter").modal('show');
+
+    }
+    var Editform = function (id) {
+        $.ajax({
+            type: "POST",
+            url: "/Companies/GetCompany",
+            data: { id: id },
+            success: function (company) {
+                $("#EditModalCenter").modal('show');
+                $("#empName").val(company.TxtCompanyName);
+                $(".updateId").val(company.IntCompany);
+            }
+        })
+    }
+</script>
+}

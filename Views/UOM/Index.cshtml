@@ -1,0 +1,261 @@
+﻿@*@model IEnumerable<IdealBizUI.ViewModels.Company>*@
+@model IdealBizUI.ViewModels.View_UnitOfMeasure
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<button type="button" class="btn btn-link" data-toggle="modal" data-target="#newModalUOM">Create New</button>
+
+<!-- Add New UOM -->
+<div class="modal fade" id="newModalUOM" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="saveForm" method="post">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Add New Unit of Measure</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+
+                        <label asp-for="UnitOfMeasure.Code" class="control-label"></label>
+                        <input asp-for="UnitOfMeasure.Code" class="form-control" />
+                        <span asp-validation-for="UnitOfMeasure.Code" class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+
+                        <label asp-for="UnitOfMeasure.Description" class="control-label"></label>
+                        <input asp-for="UnitOfMeasure.Description" class="form-control" />
+                        <span asp-validation-for="UnitOfMeasure.Description" class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnAddNew" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Customer -->
+<div class="modal fade" id="deleteModalUOM" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="saveform" method="post">
+
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Unit Of Measure</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4>Are You Sure You want to delete?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnDelete" type="button" class="btn btn-primary">Delete</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Customer -->
+<div class="modal fade" id="editUOMModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            @*<form asp-action="Update" id="EditForm" method="post">*@
+                <form id="updateForm" method="post">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Edit Unit Of Measure</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-group">
+
+                            <input class="updateId" type="hidden" asp-for="UnitOfMeasure.UoMID" />
+                            <label asp-for="UnitOfMeasure.Code" class="control-label"></label>
+                            <input id="uomCode" asp-for="UnitOfMeasure.Code" class="form-control" />
+                            <span asp-validation-for="UnitOfMeasure.Code" class="text-danger"></span>
+
+                        </div>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-group">
+
+                            <label asp-for="UnitOfMeasure.Description" class="control-label"></label>
+                            <input id="uomDesc" asp-for="UnitOfMeasure.Description" class="form-control" />
+                            <span asp-validation-for="UnitOfMeasure.Description" class="text-danger"></span>
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                        <button id="btnUpdate" type="button" class="btn btn-primary">Save Changes</button>
+                    </div>
+
+                </form>
+</div>
+    </div>
+</div>
+
+
+
+@*<p>
+    <a asp-action="Create">Create New</a>
+</p>*@
+
+<input type="hidden" id="UoMId" />
+
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.UnitOfMeasure.Code)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.UnitOfMeasure.Description)
+            </th>
+
+            <th></th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.UnitOfMeasures)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+
+                <td>
+
+                    @*<a asp-action="Edit" asp-route-id="@item.Code">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Code">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Code">Delete</a>*@
+
+                    <a id="EditForm" class="btn-link" onclick="Editform('@item.UoMID')">Edit</a> |
+                    <a id="ShowModal" class="btn-link" onclick="Confirm('@item.UoMID')">Delete</a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+    $(document).ready(function () {
+
+        $("#btnDelete").click(function () {
+            var idD = $("#UoMId").val();
+            $.ajax({
+                type: "POST",
+                url: "/UOM/DeleteUOM",
+                data: { id: idD },
+                success: function (result) {
+                    if (result) {
+                        $("#UoMId").val(null);
+                        window.location.href = "/UOM/Index";
+                    } else {
+                        alert("Opps Something Wrong");
+                    }
+                }
+            })
+        })
+
+
+        $(".btnCancel").click(function () {
+            window.location.href = "/Companies/Index";
+        })
+
+
+        $("#btnAddNew").click(function () {
+            /*alert("Save Button Clicked");*/
+
+            var uomForm = $("#saveForm").serialize();
+            $.ajax({
+                type: "POST",
+                url: "/UOM/Create",
+                data: uomForm,
+                success: function () {
+                    window.location.href = "/UOM/Index"
+                }
+            })
+        })
+
+        $("#btnUpdate").click(function () {
+            /* alert("Save Button Clicked");*/
+
+            var uomForm = $("#updateForm").serialize();
+            $.ajax({
+                type: "POST",
+                url: "/UOM/Update",
+                data: uomForm,
+                success: function () {
+                    window.location.href = "/UOM/Index"
+                }
+            })
+        })
+
+    })
+
+
+    var Confirm = function (id) {
+
+        $("#UoMId").val(id);
+        $("#deleteModalUOM").modal('show');
+
+    }
+    var Editform = function (id) {
+        $.ajax({
+            type: "POST",
+            url: "/UOM/GetUOM",
+            data: { id: id },
+            success: function (uom) {
+                $("#editUOMModal").modal('show');
+                $("#uomCode").val(uom.code);
+                $("#uomDesc").val(uom.name);
+                $(".updateId").val(uom.id);
+            }
+        })
+    }
+    </script>
+}

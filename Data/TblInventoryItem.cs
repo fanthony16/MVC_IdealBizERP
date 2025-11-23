@@ -19,8 +19,14 @@ namespace IdealBizUI.Data
         public decimal? NumSellingPrice { get; set; }
         public string TxtExpenseLedger { get; set; }
         public string TxtItemType { get; set; }
+        public bool? BtnBlock { get; set; }
+        public int? IntCategoryId { get; set; }
+        public int? IntUnitOfMeasure { get; set; }
+        public string TxtCostingMethod { get; set; }
+        public decimal? NumStandardCostPrice { get; set; }
         public DateTime? DteCreated { get; set; }
 
+        public virtual TblItemCategory IntCategory { get; set; }
         public virtual ICollection<TblOnlineOrder> TblOnlineOrders { get; set; }
     }
 }

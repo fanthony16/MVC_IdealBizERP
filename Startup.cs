@@ -1,11 +1,13 @@
 using IdealBizUI.Data;
 using IdealBizUI.InterfaceServices;
 using IdealBizUI.Models;
+using IdealBizUI.QueryManager;
 using IdealBizUI.WebManager;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,8 +32,12 @@ namespace IdealBizUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<IdealBizContext>();
+            //services.AddDbContext<IdealBizContext>();
             //services.AddTransient<SessionManager>();
+            services.AddTransient<CodeUnits>();
+            services.AddDbContext<IdealBizContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("IdealBizConnection")));
+
             services.AddTransient<IUserManager, UserManager>();
 
             services.AddSession(options =>

@@ -1,8 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.Http; 
 @using System.Text;
 
 <ul class="navbar-nav ml-sm-auto">
     @{
+
+
+        //string username = Context.Session.GetString("Username");
+        //int? age = Context.Session.GetInt32("Age");
 
         var username = Context.User.Identity.Name;
         byte[] bytes;

@@ -1,0 +1,255 @@
+﻿@model IdealBizUI.ViewModels.View_Location
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Locations</h4>
+
+<button type="button" class="btn btn-link" data-toggle="modal" data-target="#newModalLocation">Create New</button>
+
+<!-- Add New Location -->
+<div class="modal fade" id="newModalLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="saveForm" method="post">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Add New Location</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+
+                        <label asp-for="ItemLocation.Code" class="control-label"></label>
+                        <input id="nlocationCode" asp-for="ItemLocation.Code" class="form-control" />
+                        <span asp-validation-for="ItemLocation.Code" class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+
+                        <label asp-for="ItemLocation.Name" class="control-label"></label>
+                        <input id="nlocationName" asp-for="ItemLocation.Name" class="form-control" />
+                        <span asp-validation-for="ItemLocation.Name" class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnAddNew" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Item Location -->
+<div class="modal fade" id="deleteModalLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="saveform" method="post">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Item Location</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4>Are You Sure You want to delete?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnDelete" type="button" class="btn btn-primary">Delete</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Item Category -->
+<div class="modal fade" id="editLocationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            @*<form asp-action="Update" id="EditForm" method="post">*@
+            <form id="updateForm" method="post">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Edit Location</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+
+                        <input class="updateId" type="hidden" asp-for="ItemLocation.LocationID" />
+                        <label asp-for="ItemLocation.Code" class="control-label"></label>
+                        <input id="locationCode" asp-for="ItemLocation.Code" class="form-control" />
+                        <span asp-validation-for="ItemLocation.Code" class="text-danger"></span>
+
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+
+                        <label asp-for="ItemLocation.Name" class="control-label"></label>
+                        <input id="locationDesc" asp-for="ItemLocation.Name" class="form-control" />
+                        <span asp-validation-for="ItemLocation.Name" class="text-danger"></span>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnUpdate" type="button" class="btn btn-primary">Save Changes</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="ItmLocationId" />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ItemLocation.Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ItemLocation.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ItemLocations)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+
+                    @*<a asp-action="Edit" asp-route-id="@item.LocationID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.LocationID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.LocationID">Delete</a>*@
+
+                    <a id="EditForm" class="btn-link" onclick="Editform('@item.LocationID')">Edit</a> |
+                    <a id="ShowModal" class="btn-link" onclick="Confirm('@item.LocationID')">Delete</a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+
+            $("#btnDelete").click(function () {
+                var idD = $("#ItmLocationId").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Location/DeleteLocation",
+                    data: { id: idD },
+                    success: function (result) {
+                        if (result) {
+                            $("#ItmLocationId").val(null);
+                            window.location.href = "/Location/Index";
+                        } else {
+                            alert("Opps Something Wrong");
+                        }
+                    }
+                })
+            })
+
+
+            $(".btnCancel").click(function () {
+                window.location.href = "/Location/Index";
+            })
+
+
+            $("#btnAddNew").click(function () {
+
+                var lcode = $("#nlocationCode").val();
+                var lname = $("#nlocationName").val();
+
+                if (lcode == "" || lname == "" ) {
+                    alert("Enter Value In All Field Before Saving Record");
+                } else {
+
+                    var itmLocForm = $("#saveForm").serialize();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Location/Create",
+                        data: itmLocForm,
+                        success: function () {
+                            window.location.href = "/Location/Index"
+                        }
+                    })
+
+                }
+               
+            })
+
+            $("#btnUpdate").click(function () {
+
+                var itmCatForm = $("#updateForm").serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "/Location/Update",
+                    data: itmCatForm,
+                    success: function () {
+                        window.location.href = "/Location/Index"
+                    }
+                })
+            })
+
+        })
+
+
+        var Confirm = function (id) {
+
+            $("#ItmLocationId").val(id);
+            $("#deleteModalLocation").modal('show');
+
+        }
+        var Editform = function (id) {
+            $.ajax({
+                type: "POST",
+                url: "/Location/GetLocation",
+                data: { id: id },
+                success: function (iCat) {
+                    $("#editLocationModal").modal('show');
+                    $("#locationCode").val(iCat.code);
+                    $("#locationDesc").val(iCat.name);
+                    $(".updateId").val(iCat.id);
+                }
+            })
+        }
+    </script>
+}

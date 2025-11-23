@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
+using IdealBizUI.ViewModels;
 
 #nullable disable
 
@@ -12,7 +12,7 @@ namespace IdealBizUI.Data
         public IdealBizContext()
         {
         }
-        public IConfiguration configuration { get; set; }
+
         public IdealBizContext(DbContextOptions<IdealBizContext> options)
             : base(options)
         {
@@ -30,16 +30,22 @@ namespace IdealBizUI.Data
         public virtual DbSet<TblClosingBalance> TblClosingBalances { get; set; }
         public virtual DbSet<TblCompany> TblCompanies { get; set; }
         public virtual DbSet<TblCustomer> TblCustomers { get; set; }
+        public virtual DbSet<TblDivision> TblDivisions { get; set; }
         public virtual DbSet<TblEmployee> TblEmployees { get; set; }
         public virtual DbSet<TblEmployeeActivity> TblEmployeeActivities { get; set; }
         public virtual DbSet<TblExpense> TblExpenses { get; set; }
+        public virtual DbSet<TblFinancialTransaction> TblFinancialTransactions { get; set; }
         public virtual DbSet<TblGlentry> TblGlentries { get; set; }
+        public virtual DbSet<TblImage> TblImages { get; set; }
         public virtual DbSet<TblInventoryEntry> TblInventoryEntries { get; set; }
         public virtual DbSet<TblInventoryItem> TblInventoryItems { get; set; }
         public virtual DbSet<TblInventoryRequisition> TblInventoryRequisitions { get; set; }
         public virtual DbSet<TblItem> TblItems { get; set; }
+        public virtual DbSet<TblItemCategory> TblItemCategories { get; set; }
         public virtual DbSet<TblJournalDetail> TblJournalDetails { get; set; }
         public virtual DbSet<TblJournalMaster> TblJournalMasters { get; set; }
+        public virtual DbSet<TblLeisureFinancial> TblLeisureFinancials { get; set; }
+        public virtual DbSet<TblLocation> TblLocations { get; set; }
         public virtual DbSet<TblMedicalCategory> TblMedicalCategories { get; set; }
         public virtual DbSet<TblMedicalSubCategory> TblMedicalSubCategories { get; set; }
         public virtual DbSet<TblMedicalTestType> TblMedicalTestTypes { get; set; }
@@ -56,7 +62,9 @@ namespace IdealBizUI.Data
         public virtual DbSet<TblReciept> TblReciepts { get; set; }
         public virtual DbSet<TblStaffGrade> TblStaffGrades { get; set; }
         public virtual DbSet<TblStaffLevel> TblStaffLevels { get; set; }
+        public virtual DbSet<TblStudent> TblStudents { get; set; }
         public virtual DbSet<TblSubAccount> TblSubAccounts { get; set; }
+        public virtual DbSet<TblUnitOfMeasure> TblUnitOfMeasures { get; set; }
         public virtual DbSet<TblUser> TblUsers { get; set; }
         public virtual DbSet<TblUserAccess> TblUserAccesses { get; set; }
         public virtual DbSet<TblUserGroup> TblUserGroups { get; set; }
@@ -66,15 +74,9 @@ namespace IdealBizUI.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-
-                //optionsBuilder.UseSqlServer("Data Source=DML01;Initial Catalog=IdealBiz;User ID=sa;Password=staiwo16;Connect Timeout=30");
-
-
-                optionsBuilder.UseSqlServer(this.configuration.GetConnectionString("DefaultConnectionString"));
-
-
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//                optionsBuilder.UseSqlServer("****");
             }
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -176,12 +178,12 @@ namespace IdealBizUI.Data
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.FileName)
+                entity.Property(e => e.IntRecordCount).HasColumnName("intRecordCount");
+
+                entity.Property(e => e.TxtFileName)
                     .HasMaxLength(255)
                     .IsUnicode(false)
-                    .HasColumnName("fileName");
-
-                entity.Property(e => e.IntRecordCount).HasColumnName("intRecordCount");
+                    .HasColumnName("txtFileName");
             });
 
             modelBuilder.Entity<TblAccountChart>(entity =>
@@ -202,9 +204,21 @@ namespace IdealBizUI.Data
 
                 entity.Property(e => e.IntAccountGroup).HasColumnName("intAccountGroup");
 
+                entity.Property(e => e.IntAccountType).HasComment("Posting =1,Heading = 2,Total = 3,Begin_Total = 4,End_Total = 5");
+
+                entity.Property(e => e.IntIncomeOrBalance)
+                    .HasDefaultValueSql("((0))")
+                    .HasComment("0 = Income 1= Balance");
+
+                entity.Property(e => e.IntPostingType)
+                    .HasColumnName("intPostingType")
+                    .HasComment("0 = Debit, 1 = Credit, 2 = Both");
+
                 entity.Property(e => e.IntRecId)
                     .ValueGeneratedOnAdd()
                     .HasColumnName("intRecID");
+
+                entity.Property(e => e.IsBlocked).HasColumnName("isBlocked");
 
                 entity.Property(e => e.IsPosting).HasColumnName("isPosting");
 
@@ -476,6 +490,21 @@ namespace IdealBizUI.Data
                     .HasColumnName("txtTitle");
             });
 
+            modelBuilder.Entity<TblDivision>(entity =>
+            {
+                entity.HasKey(e => e.DivisionId);
+
+                entity.ToTable("tblDivisions");
+
+                entity.Property(e => e.DivisionId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("DivisionID");
+
+                entity.Property(e => e.DivisionName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<TblEmployee>(entity =>
             {
                 entity.HasKey(e => e.TxtEmployeeCode);
@@ -630,6 +659,45 @@ namespace IdealBizUI.Data
                     .HasColumnName("txtPaymentSource");
             });
 
+            modelBuilder.Entity<TblFinancialTransaction>(entity =>
+            {
+                entity.HasKey(e => e.Int);
+
+                entity.ToTable("tblFinancialTransaction");
+
+                entity.Property(e => e.Int).HasColumnName("int");
+
+                entity.Property(e => e.CentreName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DivisionId).HasColumnName("DivisionID");
+
+                entity.Property(e => e.FileName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MonthAmount).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.MonthYear).HasColumnType("date");
+
+                entity.Property(e => e.Qtdamount)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("QTDAmount");
+
+                entity.Property(e => e.TransactionClass)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TransactionType)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Ytdamount)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("YTDAmount");
+            });
+
             modelBuilder.Entity<TblGlentry>(entity =>
             {
                 entity.HasKey(e => e.IntGlentry);
@@ -689,6 +757,23 @@ namespace IdealBizUI.Data
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("txtPostedBy");
+            });
+
+            modelBuilder.Entity<TblImage>(entity =>
+            {
+                entity.HasKey(e => e.ImageId);
+
+                entity.ToTable("tblImage");
+
+                entity.Property(e => e.ImageId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("ImageID");
+
+                entity.Property(e => e.ImagePath).IsUnicode(false);
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TblInventoryEntry>(entity =>
@@ -776,18 +861,35 @@ namespace IdealBizUI.Data
                     .IsUnicode(false)
                     .HasColumnName("txtItemCode");
 
+                entity.Property(e => e.BtnBlock).HasColumnName("btnBlock");
+
                 entity.Property(e => e.DteCreated)
                     .HasColumnType("datetime")
                     .HasColumnName("dteCreated")
                     .HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.IntCategoryId).HasColumnName("intCategoryID");
+
                 entity.Property(e => e.IntInventoryId)
                     .ValueGeneratedOnAdd()
                     .HasColumnName("intInventoryID");
 
+                entity.Property(e => e.IntUnitOfMeasure)
+                    .HasColumnName("intUnitOfMeasure")
+                    .HasComment("Unit of measure");
+
                 entity.Property(e => e.NumSellingPrice)
                     .HasColumnType("numeric(18, 2)")
                     .HasColumnName("numSellingPrice");
+
+                entity.Property(e => e.NumStandardCostPrice)
+                    .HasColumnType("numeric(18, 2)")
+                    .HasColumnName("numStandardCostPrice");
+
+                entity.Property(e => e.TxtCostingMethod)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("txtCostingMethod");
 
                 entity.Property(e => e.TxtExpenseLedger)
                     .HasMaxLength(50)
@@ -810,6 +912,11 @@ namespace IdealBizUI.Data
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("txtUnitOfMeasure");
+
+                entity.HasOne(d => d.IntCategory)
+                    .WithMany(p => p.TblInventoryItems)
+                    .HasForeignKey(d => d.IntCategoryId)
+                    .HasConstraintName("FK_tblInventoryItems_tblItemCategory");
             });
 
             modelBuilder.Entity<TblInventoryRequisition>(entity =>
@@ -891,29 +998,152 @@ namespace IdealBizUI.Data
 
                 entity.Property(e => e.IntItemId).HasColumnName("intItemID");
 
+                entity.Property(e => e.BlnAllowInvoiceDiscount).HasColumnName("blnAllowInvoiceDiscount");
+
+                entity.Property(e => e.BlnBlocked).HasColumnName("blnBlocked");
+
+                entity.Property(e => e.BlnSalesBlocked).HasColumnName("blnSalesBlocked");
+
+                entity.Property(e => e.BtnPurchaseBlocked).HasColumnName("btnPurchaseBlocked");
+
                 entity.Property(e => e.DteCreated)
                     .HasColumnType("datetime")
                     .HasColumnName("dteCreated");
 
+                entity.Property(e => e.ImagePath)
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IntCategoryId).HasColumnName("intCategoryID");
+
                 entity.Property(e => e.IntCompany).HasColumnName("intCompany");
 
-                entity.Property(e => e.NumCostOfAlteration)
-                    .HasColumnType("decimal(18, 2)")
-                    .HasColumnName("numCostOfAlteration");
+                entity.Property(e => e.IntItemType)
+                    .HasColumnName("intItemType")
+                    .HasComment("0 = Inventory, 1 = Service, 2 = Non_Inventory");
 
-                entity.Property(e => e.NumCostOfSewing)
+                entity.Property(e => e.NumIndirectCost)
                     .HasColumnType("decimal(18, 2)")
-                    .HasColumnName("numCostOfSewing");
+                    .HasColumnName("numIndirectCost");
 
-                entity.Property(e => e.TxtInventoryCode)
+                entity.Property(e => e.NumSellingPrice)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("numSellingPrice");
+
+                entity.Property(e => e.NumStandardCost)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("numStandardCost");
+
+                entity.Property(e => e.NumUnitCost)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("numUnitCost");
+
+                entity.Property(e => e.TxtBaseUnitOfMeasure)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("txtBaseUnitOfMeasure");
+
+                entity.Property(e => e.TxtCostingMethod)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("txtCostingMethod");
+
+                entity.Property(e => e.TxtGeneralProductPostingGroup)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("txtGeneralProductPostingGroup");
+
+                entity.Property(e => e.TxtInventoryPostingGroup)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("txtInventoryPostingGroup");
+
+                entity.Property(e => e.TxtItemCode)
                     .HasMaxLength(30)
                     .IsUnicode(false)
-                    .HasColumnName("txtInventoryCode");
+                    .HasColumnName("txtItemCode");
 
                 entity.Property(e => e.TxtItemName)
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("txtItemName");
+
+                entity.Property(e => e.TxtPurchUnitOfMeasure)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("txtPurchUnitOfMeasure");
+
+                entity.Property(e => e.TxtPurchaseVendor)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("txtPurchaseVendor");
+
+                entity.Property(e => e.TxtReplenishSystem)
+                    .HasColumnName("txtReplenishSystem")
+                    .HasDefaultValueSql("((0))")
+                    .HasComment("Purchase = 1 ,Prod_Order = 2,Assempbly = 3");
+
+                entity.Property(e => e.TxtSalesUnitOfMeasure)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("txtSalesUnitOfMeasure");
+
+                entity.Property(e => e.TxtShelfNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("txtShelfNo");
+
+                entity.Property(e => e.TxtVatproductPostingGroup)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("txtVATProductPostingGroup");
+
+                entity.HasOne(d => d.IntCategory)
+                    .WithMany(p => p.TblItems)
+                    .HasForeignKey(d => d.IntCategoryId)
+                    .HasConstraintName("FK_tblItems_tblItemCategory");
+
+                entity.HasOne(d => d.TxtBaseUnitOfMeasureNavigation)
+                    .WithMany(p => p.TblItemTxtBaseUnitOfMeasureNavigations)
+                    .HasForeignKey(d => d.TxtBaseUnitOfMeasure)
+                    .HasConstraintName("FK_tblItems_BaseUOM");
+
+                entity.HasOne(d => d.TxtPurchUnitOfMeasureNavigation)
+                    .WithMany(p => p.TblItemTxtPurchUnitOfMeasureNavigations)
+                    .HasForeignKey(d => d.TxtPurchUnitOfMeasure)
+                    .HasConstraintName("FK_tblItems_PurchaseUOM");
+
+                entity.HasOne(d => d.TxtSalesUnitOfMeasureNavigation)
+                    .WithMany(p => p.TblItemTxtSalesUnitOfMeasureNavigations)
+                    .HasForeignKey(d => d.TxtSalesUnitOfMeasure)
+                    .HasConstraintName("FK_tblItems_SellingUOM");
+            });
+
+            modelBuilder.Entity<TblItemCategory>(entity =>
+            {
+                entity.HasKey(e => e.IntCategoryId);
+
+                entity.ToTable("tblItemCategory");
+
+                entity.HasIndex(e => e.TxtCategoryCode, "IX_tblItemCategory")
+                    .IsUnique();
+
+                entity.Property(e => e.IntCategoryId).HasColumnName("intCategoryID");
+
+                entity.Property(e => e.DteCreated)
+                    .HasColumnType("datetime")
+                    .HasColumnName("dteCreated")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.TxtCategoryCode)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("txtCategoryCode");
+
+                entity.Property(e => e.TxtDescription)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("txtDescription");
             });
 
             modelBuilder.Entity<TblJournalDetail>(entity =>
@@ -1040,6 +1270,66 @@ namespace IdealBizUI.Data
                 entity.Property(e => e.TxtValueDate)
                     .HasColumnType("datetime")
                     .HasColumnName("txtValueDate");
+            });
+
+            modelBuilder.Entity<TblLeisureFinancial>(entity =>
+            {
+                entity.HasKey(e => e.Uid);
+
+                entity.ToTable("tblLeisureFinancial");
+
+                entity.Property(e => e.Uid).HasColumnName("UID");
+
+                entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.DivisionId).HasColumnName("DivisionID");
+
+                entity.Property(e => e.Qtd)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("QTD");
+
+                entity.Property(e => e.TransactionClass)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TransactionDate).HasColumnType("date");
+
+                entity.Property(e => e.TransactionType)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Ytd)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("YTD");
+            });
+
+            modelBuilder.Entity<TblLocation>(entity =>
+            {
+                entity.HasKey(e => e.IntLocation);
+
+                entity.ToTable("tblLocation");
+
+                entity.HasIndex(e => e.TxtCode, "IX_tblLocation")
+                    .IsUnique();
+
+                entity.Property(e => e.IntLocation).HasColumnName("intLocation");
+
+                entity.Property(e => e.DteCreated)
+                    .HasColumnType("datetime")
+                    .HasColumnName("dteCreated")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.TxtCode)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("txtCode");
+
+                entity.Property(e => e.TxtName)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("txtName");
             });
 
             modelBuilder.Entity<TblMedicalCategory>(entity =>
@@ -1827,6 +2117,33 @@ namespace IdealBizUI.Data
                     .HasColumnName("txtLevelName");
             });
 
+            modelBuilder.Entity<TblStudent>(entity =>
+            {
+                entity.HasKey(e => e.IntId);
+
+                entity.ToTable("tblStudents");
+
+                entity.Property(e => e.IntId).HasColumnName("intID");
+
+                entity.Property(e => e.DteDob)
+                    .HasColumnType("date")
+                    .HasColumnName("dteDOB");
+
+                entity.Property(e => e.NumBalance)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("numBalance");
+
+                entity.Property(e => e.TxtLastName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("txtLastName");
+
+                entity.Property(e => e.TxtOthernames)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("txtOthernames");
+            });
+
             modelBuilder.Entity<TblSubAccount>(entity =>
             {
                 entity.HasKey(e => e.TxtAccountCode);
@@ -1866,6 +2183,37 @@ namespace IdealBizUI.Data
                     .HasConstraintName("FK_tblSubAccount_tblAccountChart");
             });
 
+            modelBuilder.Entity<TblUnitOfMeasure>(entity =>
+            {
+                entity.HasKey(e => e.TxtUomcode)
+                    .HasName("PK_tblUnitOfMeasure_1");
+
+                entity.ToTable("tblUnitOfMeasure");
+
+                entity.HasIndex(e => e.TxtUomcode, "IX_tblUnitOfMeasure")
+                    .IsUnique();
+
+                entity.Property(e => e.TxtUomcode)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("txtUOMCode");
+
+                entity.Property(e => e.DteCreated)
+                    .HasColumnType("datetime")
+                    .HasColumnName("dteCreated")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.IntUnitOfMeasure)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("intUnitOfMeasure");
+
+                entity.Property(e => e.TxtDesciption)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("txtDesciption");
+            });
+
             modelBuilder.Entity<TblUser>(entity =>
             {
                 entity.HasKey(e => e.IntUser);
@@ -1882,6 +2230,15 @@ namespace IdealBizUI.Data
                     .HasColumnType("datetime")
                     .HasColumnName("dteCreated");
 
+                entity.Property(e => e.IntGender)
+                    .HasColumnName("intGender")
+                    .HasComment("1=Male, 0=Female, 2=Others");
+
+                entity.Property(e => e.TxtEmail)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("txtEmail");
+
                 entity.Property(e => e.TxtFullName)
                     .HasMaxLength(50)
                     .IsUnicode(false)
@@ -1896,6 +2253,11 @@ namespace IdealBizUI.Data
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("txtSurname");
+
+                entity.Property(e => e.TxtTitle)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("txtTitle");
 
                 entity.Property(e => e.TxtUserAccessGroup)
                     .HasMaxLength(50)
@@ -2039,5 +2401,7 @@ namespace IdealBizUI.Data
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        public DbSet<IdealBizUI.ViewModels.View_AccountChart> View_AccountChart { get; set; }
     }
 }

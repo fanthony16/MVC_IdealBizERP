@@ -21,16 +21,14 @@ namespace IdealBizUI.Controllers
         private readonly IConfiguration _configuration;
         private readonly IdealBizContext _db;
         private readonly IUserManager _uManager;
-       
 
         public AccountController(IConfiguration configuration, IdealBizContext db, IUserManager uManager) 
         {
             _configuration = configuration;
             _db = db;
-            _db.configuration = _configuration;
+            //_db.configuration = _configuration;
             _uManager = uManager;
             _uManager.SetDbContext(_db);
-            
             
         }
         public IActionResult Login()
@@ -45,17 +43,23 @@ namespace IdealBizUI.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                
+
               var isAuthenticated =  await _uManager.LoginUser(LVModel);
                 if (isAuthenticated) 
                 {
                     
+                    HttpContext.Session.SetString("nickname", "Inamoto");
                     HttpContext.Session.Set("username", Encoding.ASCII.GetBytes(LVModel.UserName));
                     var _sessionManager = new SessionManager(HttpContext);
                     _sessionManager.SaveSessionObject(LVModel.UserName, "name");
                     return RedirectToAction("Index", "Home");
                     
                 }
+
                 else 
+
                 {
                     ViewData["Message"] = "User name or Password is Incorrect";
                     return View();
@@ -107,7 +111,10 @@ namespace IdealBizUI.Controllers
                 "Director",
                 "Admin"
             };
-            ViewBag.Roles = new SelectList(roles);
+            List<string> bb = new List<string>();
+            
+
+            
 
             populateViewBags();
             return View();

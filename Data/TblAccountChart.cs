@@ -17,6 +17,10 @@ namespace IdealBizUI.Data
         public string TxtAccountName { get; set; }
         public int? IntAccountGroup { get; set; }
         public bool? IsPosting { get; set; }
+        public bool? IsBlocked { get; set; }
+        public int? IntIncomeOrBalance { get; set; }
+        public int? IntAccountType { get; set; }
+        public int? IntPostingType { get; set; }
         public DateTime? DteCreated { get; set; }
 
         public virtual TblAccountGroup IntAccountGroupNavigation { get; set; }

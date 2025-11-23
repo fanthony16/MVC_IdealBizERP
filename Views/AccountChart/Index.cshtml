@@ -1,0 +1,103 @@
+﻿@model IEnumerable<IdealBizUI.ViewModels.View_AccountChart>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Chart Of Account</h4>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form asp-action="Index">
+
+    <div class="row">
+        <div class="col-md-8">
+            <input name="name" class="form-control" placeholder="Search By Name" />
+        </div>
+
+        <div class="col-md-4">
+            
+            <button type="submit" class="btn btn-info">Search</button>
+
+        </div>
+
+    </div>
+
+</form>
+
+<p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.txtAccountNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.txtAccountName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.intAccountGroup)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.isPosting)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.isBlocked)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IntIncomeOrBalance)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IntAccountType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.intPostingType)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.txtAccountNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.txtAccountName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.intAccountGroup)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.isPosting)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.isBlocked)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IntIncomeOrBalance)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IntAccountType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.intPostingType)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.txtAccountNumber">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.txtAccountNumber">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.txtAccountNumber">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</p>
+
+@await Html.PartialAsync("_Pagination", 20)
